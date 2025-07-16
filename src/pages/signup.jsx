@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
 import React from "react";
@@ -29,6 +30,17 @@ export default function SignupPage() {
           <Input placeholder="Digite seu email" />
           <PasswordInputs placeholder="Digite a sua senha" />
           <PasswordInputs placeholder="Digite a sua senha novamente" />
+          <div className="flex items-top gap-3">
+            <Checkbox id="terms" defaultChecked />
+            <div className="grid gap-2 opacity-75 text-xs">
+              <label htmlFor="terms-2" className="text-muted-foreground ">
+                Ao clicar em “Criar conta”, você aceita
+                <a href="" className="text-white underline ml-1">
+                  nosso termo de uso e política de privacidade
+                </a>
+              </label>
+            </div>
+          </div>
         </CardContent>
 
         <CardFooter>
