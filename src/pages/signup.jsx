@@ -8,12 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import React, { useState } from "react";
+import PasswordInputs from "@/components/ui/passwordInputs";
+import React from "react";
 import { Link } from "react-router";
 
 export default function SignupPage() {
-  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+  //   const []  =
 
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-center gap-3">
@@ -27,21 +27,8 @@ export default function SignupPage() {
           <Input placeholder="Digite seu nome" />
           <Input placeholder="Digite seu sobrenome" />
           <Input placeholder="Digite seu email" />
-
-          <div className="relative">
-            <Input
-              placeholder="Digite sua senha"
-              type={passwordIsVisible ? "text" : "password"}
-            />
-
-            <Button
-              variant="ghots"
-              className="absolute right-0 top-0 bottom-0 my-auto mr-1 h-8 w-8 text-muted-foreground"
-              onClick={() => setPasswordIsVisible((prevValue) => !prevValue)}
-            >
-              {passwordIsVisible ? <EyeOffIcon /> : <EyeIcon />}
-            </Button>
-          </div>
+          <PasswordInputs placeholder="Digite a sua senha" />
+          <PasswordInputs placeholder="Digite a sua senha novamente" />
         </CardContent>
 
         <CardFooter>
