@@ -23,7 +23,7 @@ export const signupSchema = z.object({
 
 export const loginSchema = z.object({
   email: z.email({ message: "o email é inválido" }),
-  password: z.string().trim().min(6, {
-    message: "A senha deve conter no mínimo 6 caractéres",
+  password: z.string({ message: "A senha é obrigatória" }).trim().min(6, {
+    message: "A senha deve ter no mínimo 6 caractéres",
   }),
 });
