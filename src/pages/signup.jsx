@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
 import React from "react";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -26,7 +26,7 @@ import { signupSchema } from "@/schemas/userSchemas";
 import { useAuthContext } from "@/contexts/auth";
 
 export default function SignupPage() {
-  const { user, signup } = useAuthContext();
+  const { user, signup, isInitializing } = useAuthContext();
 
   const methods = useForm({
     resolver: zodResolver(signupSchema),
@@ -44,8 +44,12 @@ export default function SignupPage() {
     signup(data);
   }
 
+  if (isInitializing) {
+    return null;
+  }
+
   if (user) {
-    return <h1>Ola, {user.first_name}</h1>;
+    return <Navigate to={"/"} />;
   }
 
   return (

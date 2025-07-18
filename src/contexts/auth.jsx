@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 export const AuthContext = createContext({
   user: null,
+  isInitializing: true,
   login: () => {},
   signup: () => {},
 });
@@ -21,6 +22,7 @@ const setTokens = (tokens) => {
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState();
+  const [isInitializing, setIsInitializing] = useState(true);
 
   const signupMutation = useMutation({
     mutationKey: ["signup"],
@@ -83,6 +85,8 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       try {
+        setIsInitializing(true);
+
         const accessToken = localStorage.getItem(
           LOCAL_STORAGE_ACCESS_TOKEN_KEY
         );
@@ -100,10 +104,13 @@ export const AuthContextProvider = ({ children }) => {
 
         setUser(respose.data);
       } catch (error) {
+        setUser(null);
         localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
         localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
 
         console.log(error);
+      } finally {
+        setIsInitializing(false);
       }
     };
 
@@ -111,7 +118,14 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: user, login: login, signup: signup }}>
+    <AuthContext.Provider
+      value={{
+        user: user,
+        login: login,
+        signup: signup,
+        isInitializing: isInitializing,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
