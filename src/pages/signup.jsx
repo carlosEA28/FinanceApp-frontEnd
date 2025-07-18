@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -75,6 +75,32 @@ export default function SignupPage() {
       },
     });
   }
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!accessToken && !refreshToken) return;
+
+        const respose = await api.get("/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        setUser(respose.data);
+      } catch (error) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        console.log(error);
+      }
+    };
+
+    init();
+  }, []);
 
   if (user) {
     return <h1>Ola {user.first_name}</h1>;
