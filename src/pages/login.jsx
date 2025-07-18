@@ -17,15 +17,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
-import { AuthContext } from "@/contexts/auth";
+import { useAuthContext } from "@/contexts/auth";
 import { loginSchema } from "@/schemas/userSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useContext } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 export default function LoginPage() {
-  const { user, login } = useContext(AuthContext);
+  const { user, login } = useAuthContext();
 
   const methods = useForm({
     resolver: zodResolver(loginSchema),

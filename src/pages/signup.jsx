@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,10 +23,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signupSchema } from "@/schemas/userSchemas";
-import { AuthContext } from "@/contexts/auth";
+import { useAuthContext } from "@/contexts/auth";
 
 export default function SignupPage() {
-  const { user, signup } = useContext(AuthContext);
+  const { user, signup } = useAuthContext();
 
   const methods = useForm({
     resolver: zodResolver(signupSchema),
