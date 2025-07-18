@@ -5,6 +5,11 @@ export const api = axios.create({
   baseURL: "http://localhost:3000",
 });
 
+//usada para rotas publicas
+export const publicApi = axios.create({
+  baseURL: "http://localhost:3000",
+});
+
 // é como se fosse um middlleware que passa pelas rotas e coloca o access token no authrization
 api.interceptors.request.use((request) => {
   const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
