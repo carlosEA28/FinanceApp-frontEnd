@@ -1,3 +1,7 @@
+import {
+  LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+} from "@/constants/localstorage";
 import { api } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -12,9 +16,6 @@ export const AuthContext = createContext({
 });
 
 export const useAuthContext = () => useContext(AuthContext);
-
-const LOCAL_STORAGE_ACCESS_TOKEN_KEY = "accessToken";
-const LOCAL_STORAGE_REFRESH_TOKEN_KEY = "refreshToken";
 
 const setTokens = (tokens) => {
   localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, tokens.accessToken);
@@ -103,11 +104,7 @@ export const AuthContextProvider = ({ children }) => {
 
         if (!accessToken && !refreshToken) return;
 
-        const respose = await api.get("/api/users/me", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const respose = await api.get("/api/users/me");
 
         setUser(respose.data);
       } catch (error) {
