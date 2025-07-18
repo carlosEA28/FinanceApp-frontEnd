@@ -46,6 +46,37 @@ export const AuthContextProvider = ({ children }) => {
     });
   };
 
+  const loginMutation = useMutation({
+    mutationKey: "login",
+    mutationFn: async (variables) => {
+      const response = await api.post("/api/users/login", {
+        email: variables.email,
+        password: variables.password,
+      });
+
+      return response.data;
+    },
+  });
+
+  const login = (data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (logedUser) => {
+        const accessToken = logedUser.tokens.accessToken;
+        const refreshToken = logedUser.tokens.refreshToken;
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setUser(logedUser);
+        toast.success("Login feito com sucesso");
+      },
+      onError: () => {
+        toast.error(
+          "Erro ao criar conta. Por favor tente criar a conta mais tarde"
+        );
+      },
+    });
+  };
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -73,9 +104,7 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user: user, login: () => {}, signup: signup }}
-    >
+    <AuthContext.Provider value={{ user: user, login: login, signup: signup }}>
       {children}
     </AuthContext.Provider>
   );

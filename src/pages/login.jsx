@@ -18,75 +18,21 @@ import {
 import { Input } from "@/components/ui/input";
 import PasswordInputs from "@/components/ui/passwordInputs";
 import { AuthContext } from "@/contexts/auth";
-import { api } from "@/lib/axios";
 import { loginSchema } from "@/schemas/userSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
-import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [user, setUser] = useState();
-  const loginMutation = useMutation({
-    mutationKey: "login",
-    mutationFn: async (variables) => {
-      const response = await api.post("/api/users/login", {
-        email: variables.email,
-        password: variables.password,
-      });
-
-      return response.data;
-    },
-  });
+  const { user, login } = useContext(AuthContext);
 
   const methods = useForm({
     resolver: zodResolver(loginSchema),
   });
 
-  useEffect(() => {
-    const init = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!accessToken && !refreshToken) return;
-
-      try {
-        const respose = await api.get("/api/users/me", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        setUser(respose.data);
-      } catch (error) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-
-        console.log(error);
-      }
-    };
-
-    init();
-  }, []);
-
   function handleSubmit(data) {
-    loginMutation.mutate(data, {
-      onSuccess: (logedUser) => {
-        const accessToken = logedUser.tokens.accessToken;
-        const refreshToken = logedUser.tokens.refreshToken;
-
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        setUser(logedUser);
-        toast.success("Login feito com sucesso");
-      },
-      onError: () => {
-        toast.error(
-          "Erro ao criar conta. Por favor tente criar a conta mais tarde"
-        );
-      },
-    });
+    login(data);
   }
 
   if (user) {
