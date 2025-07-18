@@ -8,6 +8,7 @@ export const AuthContext = createContext({
   isInitializing: true,
   login: () => {},
   signup: () => {},
+  signout: () => {},
 });
 
 export const useAuthContext = () => useContext(AuthContext);
@@ -82,6 +83,12 @@ export const AuthContextProvider = ({ children }) => {
     });
   };
 
+  const signout = () => {
+    setUser(null);
+    localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+  };
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -124,6 +131,7 @@ export const AuthContextProvider = ({ children }) => {
         login: login,
         signup: signup,
         isInitializing: isInitializing,
+        signout: signout,
       }}
     >
       {children}
