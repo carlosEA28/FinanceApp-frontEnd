@@ -102,10 +102,6 @@ export default function SignupPage() {
     init();
   }, []);
 
-  if (user) {
-    return <h1>Ola {user.first_name}</h1>;
-  }
-
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-center gap-3">
       <Form {...methods}>
