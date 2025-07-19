@@ -1,4 +1,4 @@
-import { publicApi } from "@/lib/axios";
+import { api, publicApi } from "@/lib/axios";
 
 export const userService = {
   signup: async (input) => {
@@ -18,5 +18,11 @@ export const userService = {
     });
 
     return response.data;
+  },
+
+  me: async () => {
+    const respose = await api.get("/api/users/me");
+
+    return respose.data;
   },
 };

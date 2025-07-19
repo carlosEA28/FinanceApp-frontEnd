@@ -2,7 +2,6 @@ import {
   LOCAL_STORAGE_ACCESS_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
 } from "@/constants/localstorage";
-import { api, publicApi } from "@/lib/axios";
 import { userService } from "@/services/user";
 import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -96,9 +95,9 @@ export const AuthContextProvider = ({ children }) => {
 
         if (!accessToken && !refreshToken) return;
 
-        const respose = await api.get("/api/users/me");
+        const response = await userService.me();
 
-        setUser(respose.data);
+        setUser(response);
       } catch (error) {
         setUser(null);
         localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
