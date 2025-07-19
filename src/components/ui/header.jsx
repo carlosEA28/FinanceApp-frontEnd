@@ -25,7 +25,7 @@ const Header = () => {
 
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex">
+            <DropdownMenuTrigger className="flex" asChild>
               <Button variant="outline" className="space-x-2">
                 <Avatar className="h-6 w-6">
                   <AvatarImage src="https://github.com/shadcn.png" />
