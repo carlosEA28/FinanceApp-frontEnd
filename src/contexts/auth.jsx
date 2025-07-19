@@ -3,6 +3,7 @@ import {
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
 } from "@/constants/localstorage";
 import { api, publicApi } from "@/lib/axios";
+import { userService } from "@/services/user";
 import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -29,14 +30,9 @@ export const AuthContextProvider = ({ children }) => {
   const signupMutation = useMutation({
     mutationKey: ["signup"],
     mutationFn: async (variables) => {
-      const response = await publicApi.post("/api/users", {
-        first_name: variables.first_name,
-        last_name: variables.last_name,
-        email: variables.email,
-        password: variables.password,
-      });
+      const response = await userService.signup(variables);
 
-      return response.data;
+      return response;
     },
   });
 

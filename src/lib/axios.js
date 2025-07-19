@@ -25,6 +25,7 @@ api.interceptors.request.use((request) => {
   return request;
 });
 
+// verifica nas rotas se eu tenho um token, caso eu nao tenha e ele retorne 401, ele atualiza o meu accesseToken com o refreshToken
 api.interceptors.response.use(
   (response) => {
     return response;
