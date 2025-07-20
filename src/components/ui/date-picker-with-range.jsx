@@ -1,9 +1,3 @@
-"use client";
-
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale/pt-BR";
-import { Calendar as CalendarIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,60 +5,43 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import React from "react";
 
 export const DatePickerWithRange = ({
   value,
   onChange,
-  className,
   placeholder = "Selecione uma data",
 }) => {
+  const isRange = value?.from && value?.to;
+
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !value && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon />
-            {value?.from ? (
-              value.to ? (
-                <>
-                  {format(value.from, "LLL dd, y", {
-                    locale: ptBR,
-                  })}{" "}
-                  -{" "}
-                  {format(value.to, "LLL dd, y", {
-                    locale: ptBR,
-                  })}
-                </>
-              ) : (
-                format(value.from, "LLL dd, y", {
-                  locale: ptBR,
-                })
-              )
-            ) : (
-              <span>{placeholder}</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={value?.from}
-            selected={value}
-            onSelect={onChange}
-            numberOfMonths={2}
-            locale={ptBR}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          data-empty={!value?.from}
+          className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {isRange ? (
+            `${format(value.from, "PPP")} - ${format(value.to, "PPP")}`
+          ) : value?.from ? (
+            format(value.from, "PPP")
+          ) : (
+            <span>{placeholder}</span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <Calendar
+          mode="range"
+          selected={value}
+          onSelect={onChange}
+          numberOfMonths={2}
+        />
+      </PopoverContent>
+    </Popover>
   );
 };

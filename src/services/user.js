@@ -25,4 +25,16 @@ export const userService = {
 
     return respose.data;
   },
+
+  getBalance: async (input) => {
+    const queryParams = new URLSearchParams();
+
+    if (input.from) queryParams.set("from", input.from);
+    if (input.to) queryParams.set("to", input.to);
+
+    const response = await api.get(
+      `/api/users/me/balance?${queryParams.toString()}`
+    );
+    return response.data;
+  },
 };
