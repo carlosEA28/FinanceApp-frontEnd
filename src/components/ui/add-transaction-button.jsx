@@ -17,7 +17,6 @@ import { transactionFormSchema } from "@/schemas/transactionSchemas";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -26,21 +25,42 @@ import {
 import { Input } from "./input";
 import { DatePicker } from "./date-picker";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { transactionService } from "@/services/transaction";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/auth";
 
 const AddTransactionButton = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuthContext();
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["createTransaction"],
+    mutationFn: (input) => transactionService.create(input),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["balance", user.id]);
+    },
+  });
+
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       name: "",
-      amount: 0,
+      valor: 0,
       date: new Date(),
     },
 
     shouldUnregister: true, //limpa o form
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await mutateAsync(data);
+      toast.success("Transação criada com sucesso ");
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -77,7 +97,7 @@ const AddTransactionButton = () => {
 
               <FormField
                 control={form.control}
-                name="valor"
+                name="amount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Valor</FormLabel>
@@ -89,10 +109,9 @@ const AddTransactionButton = () => {
                         prefix="R$"
                         allowNegative={false}
                         customInput={Input}
-                        {...field}
-                        onChange={() => {}}
+                        value={field.value ?? ""}
                         onValueChange={(values) =>
-                          field.onChange(values.floatValue)
+                          field.onChange(values.floatValue ?? 0)
                         }
                       />
                     </FormControl>
@@ -169,7 +188,7 @@ const AddTransactionButton = () => {
                   </Button>
                 </DialogClose>
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={isPending}>
                   Adicionar
                 </Button>
               </DialogFooter>

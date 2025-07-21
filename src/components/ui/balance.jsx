@@ -8,13 +8,12 @@ import { useAuthContext } from "@/contexts/auth";
 const Balance = () => {
   const [searchParmas] = useSearchParams();
   const { user } = useAuthContext();
+  const from = searchParmas.get("from");
+  const to = searchParmas.get("to");
 
   const { data } = useQuery({
-    queryKey: ["balance", user.id],
+    queryKey: ["balance", user.id, from, to],
     queryFn: () => {
-      const from = searchParmas.get("from");
-      const to = searchParmas.get("to");
-
       return userService.getBalance(from, to);
     },
   });
