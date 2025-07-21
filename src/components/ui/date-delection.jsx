@@ -1,12 +1,33 @@
 import { useEffect, useState } from "react";
 import { DatePickerWithRange } from "./date-picker-with-range";
 import { useNavigate, useSearchParams } from "react-router";
-import { addMonths, format } from "date-fns";
+import { addMonths, format, isValid } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "@/contexts/auth";
 
 const formatDateToQueryParam = (date) => {
   return format(date, "yyyy-MM-dd");
+};
+
+const getInitialDateState = (searchParmas) => {
+  const from = searchParmas.get("from");
+  const to = searchParmas.get("to");
+
+  if (!from || !to) {
+    return {
+      from: new Date(),
+      to: addMonths(new Date(), 1),
+    };
+  }
+
+  const datesAreInvalid = !isValid(new Date(from)) || !isValid(new Date(to));
+
+  if (datesAreInvalid) {
+    return {
+      from: new Date(from),
+      to: new Date(to),
+    };
+  }
 };
 
 const DateSelection = () => {
@@ -15,17 +36,8 @@ const DateSelection = () => {
 
   const [searchParmas] = useSearchParams();
   const navigate = useNavigate();
-  const [date, setDate] = useState({
-    from: searchParmas.get("from")
-      ? new Date(searchParmas.get("from"))
-      : new Date(),
+  const [date, setDate] = useState(getInitialDateState(searchParmas));
 
-    to: searchParmas.get("to")
-      ? new Date(searchParmas.get("to"))
-      : addMonths(new Date(), 1),
-  });
-
-  //se der erro na api, tirar o format e voltar com o isoString
   useEffect(() => {
     if (!date?.from || !date?.to) return;
 
